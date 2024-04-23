@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Conecta 4 - Alejandro</title>
+</head>
+
+<body>
+    <!-- Aquí tenemos el titutlo y la explicación de como jugar al juego. -->
+    <header>
+        <h2 class="titulo">Juego Conecta 4</h2>
+    </header>
+    <p class="textoInicio" id="textoInicio">Bienvenido! Juega contra un jugador o contra la máquina!</p>
+    <p class="textoElegir" id="textoElegir">Elige el jugador que empieza la partida!</p>
+    <p class="textoJuego" id="textoJuego">Para colocar la fitcha posicionate en la columna y click izquierdo.</p>
+
+    <!-- Estas son las opciones al empezar la partida. -->
+    <div class="inicio" id="inicio">
+        <button type="button" class="btn btn-primary" id="PlayerVsPlayer">Player vs Player</button>
+        <button type="button" class="btn btn-warning" id="PlayerVsCPU">Player vs CPU</button>
+    </div>
+
+    <!-- Estos botones son la elección de que jugador empieza, que se muestral al jugar contra la CPU. -->
+    <div class="inicio" id="elegirJugador">
+        <button type="button" class="btn btn-primary" onclick="iniciarPartidaConCPU(1)">Jugador 1</button>
+        <button type="button" class="btn btn-danger" onclick="iniciarPartidaConCPU(2)">Jugador 2</button>
+    </div>
+    <!-- Creamos un contenedor padre para poder agrupar todos los demas contenidos. -->
+    <div id="canvasContainer">
+
+        <!-- Para poder crear diferentes capas para superponerlas
+            he creados dos canvas separando el tablero y fitcha pero estan encima del uno al otro. -->
+        <canvas id="tablero" width="500" height="500"></canvas>
+        <canvas id="ficha" width="500" height="500"></canvas>
+
+        <!-- Aquí he creado 7 botones que mandan la columna a la funcion, estos botones hacen la funcion
+            de ocupar el estapcio de la columna entera del tablero en modo invisible. Para poder
+            clicar encima de la columna y que se posicione la fitcha. -->
+        <button class="colVertical1" id="colVertical1" onclick="alternatePlayer(1)">⬇</button>
+        <button class="colVertical2" id="colVertical2" onclick="alternatePlayer(2)">⬇</button>
+        <button class="colVertical3" id="colVertical3" onclick="alternatePlayer(3)">⬇</button>
+        <button class="colVertical4" id="colVertical4" onclick="alternatePlayer(4)">⬇</button>
+        <button class="colVertical5" id="colVertical5" onclick="alternatePlayer(5)">⬇</button>
+        <button class="colVertical6" id="colVertical6" onclick="alternatePlayer(6)">⬇</button>
+        <button class="colVertical7" id="colVertical7" onclick="alternatePlayer(7)">⬇</button>
+
+    </div>
+
+    <!-- Divs para mostrar las interacciónes con el juego. -->
+    <div class="interaccion">
+        <div id="resultado"></div>
+        <div id="error"></div>
+        <div id="ganador"></div>
+        <!-- Este boton aparecera una vez haya acabado la partida. -->
+        <button type="button" class="btn btn-danger" id="reiniciarBtn" onclick="reiniciarPartida()" style="display: none;">Reiniciar partida</button>
+    </div>
+
+    <!-- Aqui llamamos al script -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>

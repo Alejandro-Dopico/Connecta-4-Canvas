@@ -1,0 +1,259 @@
+/* /// Clases de estilo de mi programa conecta 4 /// */
+/*  ***   style.css   ***
+    Basicamente la estructura del CSS es que he centrado todo
+    Con contenidos display flex haciendo que todo se situe en el centro
+    El resumen es que estan los canvas que interaccionan con el script para
+    mostrarse. Además de tener botones invisibles para cuando le des click a
+    la columna vertical se posiciones la fitcha.
+*/
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.titulo {
+    margin-top: 20px;
+    font-family: "Source Sans Pro", "Arial", sans-serif;
+}
+
+.inicio {
+    margin-top: 5px;
+}
+
+.textoElegir {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+#elegirJugador {
+    display: none;
+}
+
+.textoJuego {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.textoInicio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Los dos divs del canvas para darle estilo y superponerlos encima. */
+
+#ficha {
+    margin-top: 40px;
+    border-radius: 10px;
+    border: solid 1px black;
+}
+
+#tablero {
+    margin-top: 40px;
+    border-radius: 10px;
+    border: solid 2px rgb(0, 0, 143);
+    position: absolute;
+    display: block;
+    background: transparent;
+
+}
+
+.interaccion {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+#canvasContainer {
+    position: relative;
+    display: none;
+}
+
+/* 
+    Voy a explicar porque todos las clases siguientes son las mismas.
+    Estos son los botones que los he posicionado verticalmente y con una altura
+    que ocupa de arriba abajo todo el tablero. Estos los he puesto en invisible
+    a escepcion de pasar el raton por encima que habilito el texto que es una flecha
+    para inidicar visualmente que es la columna donde quieres tirar la fitcha.
+    en el tranlateX -50% ahi es donde convertimos el contenedor en vertical.
+    En el atributo "left" marcamos el posicionamiento del contenedor.
+*/
+.colVertical1 {
+    position: absolute;
+    margin-top: -10px;
+    left: 7%;
+    width: 70px;
+    height: 97%; 
+    top: 0; 
+    transform: translateX(-50%);
+    border: none; 
+    padding: 0;
+    background: none; 
+    color: transparent; 
+    cursor: pointer; 
+    display: flex;  
+    justify-content: center; 
+    display: none;
+}
+
+.colVertical1:hover {
+    font-size: 35px;
+    color: rgb(0, 7, 112); 
+}
+
+.colVertical2 {
+    position: absolute;
+    margin-top: -10px;
+    left: 21.5%;
+    width: 70px;
+    height: 97%; 
+    top: 0; 
+    transform: translateX(-50%); 
+    border: none; 
+    padding: 0; 
+    background: none; 
+    color: transparent; 
+    cursor: pointer; 
+    display: flex;
+    justify-content: center; 
+    display: none;
+}
+
+.colVertical2:hover {
+    font-size: 35px;
+    color: rgb(0, 7, 112); 
+}
+
+.colVertical3 {
+    position: absolute;
+    margin-top: -10px;
+    left: 36.2%;
+    width: 70px; 
+    height: 97%; 
+    top: 0; 
+    transform: translateX(-50%); 
+    border: none; 
+    padding: 0; 
+    background: none; 
+    color: transparent; 
+    cursor: pointer; 
+    display: flex;
+    justify-content: center; 
+    display: none;
+}
+
+.colVertical3:hover {
+    font-size: 35px;
+    color: rgb(0, 7, 112); 
+}
+
+.colVertical4 {
+    position: absolute;
+    margin-top: -10px;
+    left: 50.5%;
+    width: 70px; 
+    height: 97%; 
+    top: 0; 
+    transform: translateX(-50%); 
+    border: none; 
+    padding: 0; 
+    background: none;
+    color: transparent; 
+    cursor: pointer; 
+    display: flex;
+    justify-content: center; 
+    display: none;
+}
+
+.colVertical4:hover {
+    font-size: 35px;
+    color: rgb(0, 7, 112); 
+}
+
+.colVertical5 {
+    position: absolute;
+    margin-top: -10px;
+    left: 65%;
+    width: 70px; 
+    height: 97%; 
+    top: 0; 
+    transform: translateX(-50%); 
+    border: none; 
+    padding: 0;
+    background: none; 
+    color: transparent; 
+    cursor: pointer;
+    display: flex;
+    justify-content: center; 
+    display: none;
+}
+
+.colVertical5:hover {
+    font-size: 35px;
+    color: rgb(0, 7, 112); 
+}
+
+.colVertical6 {
+    position: absolute;
+    margin-top: -10px;
+    left: 79%;
+    width: 70px; 
+    height: 97%; 
+    top: 0; 
+    transform: translateX(-50%); 
+    border: none; 
+    padding: 0; 
+    background: none; 
+    color: transparent; 
+    cursor: pointer; 
+    display: flex;
+    justify-content: center; 
+    display: none;
+}
+
+.colVertical6:hover {
+    font-size: 35px;
+    color: rgb(0, 7, 112); 
+}
+
+.colVertical7 {
+    position: absolute;
+    margin-top: -10px;
+    left: 93.2%;
+    width: 70px; 
+    height: 97%; 
+    top: 0;
+    transform: translateX(-50%); 
+    border: none; 
+    padding: 0; 
+    background: none; 
+    color: transparent; 
+    cursor: pointer; 
+    display: flex;
+    justify-content: center; 
+    display: none;
+}
+
+.colVertical7:hover {
+    font-size: 35px;
+    color: rgb(0, 7, 112); 
+}
+
+
