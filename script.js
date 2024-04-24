@@ -223,7 +223,7 @@ function alternatePlayer(colSelectedButton) {
 */
 function CpuMove() {
   currentPlayer = player2;
-  selected(currentPlayer, minimax(currentPlayer, posiciones, 7, currentPlayer, -Infinity, Infinity));
+  selected(currentPlayer, minimax(currentPlayer, posiciones, 4, currentPlayer, -Infinity, Infinity));
 }
 
 
