@@ -73,6 +73,8 @@ si quisieramos mas columnas filas o que las posiciones de los circulos cambiasen
 seria aquí. */
 let posiciones = generarPosiciones(7, 6, 33, 455, 72, 83);
 
+
+
 /* Aquí creamos los dos circulos uno para cada jugador, color azul y rojo. */
 var ballPlayer1 = {
   x: optionX,
@@ -216,14 +218,39 @@ function alternatePlayer(colSelectedButton) {
   selected(currentPlayer, columnSelected);
 }
 
+
+/*  Hacemos que las posiciones sean una matriz 7x6 para que se adapte al tablero
+  del conecta4 asi podremos iterarlo mejor mas adelante. ademas de actualizar las posiciones
+  actuales del tablero. */
+function updateBoard () {
+  let board = [];
+  for (let col = 0; col < 7; col++) {
+    board[col] = [];
+    for (let row = 0; row < 6; row++) {
+      board[col][row] = null;
+    }
+  }
+
+  posiciones.forEach(posicion => {
+    if (posicion.fitcha !== null) {
+      board[posicion.col - 1][posicion.row - 1] = posicion.fitcha.idJugador;
+    }
+  });
+  return board;
+}
+
 /*  *** CpuMove() ***
     Como bien indica el nombre de esta función, se encarga de asignarle un movimiento a la CPU
-    Assignamos que jugador es la CPU, jugador2 y llamamos a la función minimax para generar
-    el mejor movimiento que tiene a su disposción. Y parseamos el resultado a int porque es el que lee selected.
+    Assignamos que jugador es la CPU, jugador2 y llamamos a la función besMove que esta
+    ejecutara minimax y nos dara como resultado el mejor movimiento con el minimax.
 */
 function CpuMove() {
   currentPlayer = player2;
-  selected(currentPlayer, minimax(currentPlayer, posiciones, 4, currentPlayer, -Infinity, Infinity));
+
+  let bestMovePosition = bestMove(updateBoard());
+
+  // Sumar 1 para ajustar la columna al rango 1-7, ay que para la matriz la columna 1 es 0 (por ejemplo).
+  selected(currentPlayer, bestMovePosition.col + 1); 
 }
 
 
@@ -248,10 +275,9 @@ function selected(player, columnSelected) {
 
   selectedPosition.fitcha = player;
   drawBall(selectedPosition, player);
-
-
+  console.log("Asi va los movimientos de la partida: ", updateBoard());
   /* Con la funcion checkWinner */
-  if (checkWinner(player)) {
+  if (checkWinner(updateBoard(), player.idJugador)) {
     document.getElementById("reiniciarBtn").style.display = "inline";
     // Si hay un ganador, imprimir el resultado en el HTML
     var ganador = document.getElementById("ganador");
@@ -322,7 +348,7 @@ function drawBall(position, player) {
         // Almacenar la ficha en la posición seleccionada y se registra en el jugador.
         position.fitcha = player;
 
-        if (!checkWinner(player)) {
+        if (!checkWinner(updateBoard(), player.idJugador)) {
           document.querySelectorAll(".colVertical1, .colVertical2, .colVertical3, .colVertical4, .colVertical5, .colVertical6, .colVertical7").forEach(function (btn) {
             btn.disabled = false;
           });
@@ -385,25 +411,11 @@ function drawGrid() {
 
     El metodo "getAllLines" lo que hace es generar todas las posibles lineas consecutivas ganadoras, todas las posiciones ganadoras.
 */
-function checkWinner(player) {
-  let board = [];
-  for (let col = 0; col < 7; col++) {
-    board[col] = [];
-    for (let row = 0; row < 6; row++) {
-      board[col][row] = null;
-    }
-  }
+function checkWinner(board, player) {
 
-  // Asignamos en el tablero las fitchas de los jugadores.
-  posiciones.forEach(posicion => {
-    if (posicion.fitcha !== null) {
-      board[posicion.col - 1][posicion.row - 1] = posicion.fitcha.idJugador;
-    }
-  });
-
-  function isWinningLine(line) {
+  function isWinningLine(line, player) {
     const lineString = line.join('');
-    return lineString.includes('1111') || lineString.includes('2222');
+    return lineString.includes(player.toString().repeat(4));
   }
 
   function getAllLines(board) {
@@ -439,7 +451,7 @@ function checkWinner(player) {
       El for recorre todas las lineas y las comprueba si hay alguna ganadora. */
   const lines = getAllLines(board);
   for (const line of lines) {
-    if (isWinningLine(line)) {
+    if (isWinningLine(line, player)) {
       document.getElementById(`colVertical1`).disabled = false;
       return true;
     }
@@ -448,70 +460,296 @@ function checkWinner(player) {
   return false;
 }
 
-/*  *** algoritmo minimax ***
-    Este es el algoritmo minimax, por parametro le pasamos el jugador actual, el tablero "posiciones",
-    cuanta profundidad busca el algoritmo (puede hasta 4), maximizingPlayer es para ver como bva el puntuaje del jugador
-    actual que enviamos por parametro, y "alpha" y "beta" son variables que utiliza minimax para optimizar el funcionamiento y mejorar
-    la eficiencia de busqueda. Esta funcion incluye recursión sobre ella misma.
 
-    Recursión:
-
-    Para cada posición disponible, se simula el movimiento del jugador actual en esa posición y se llama recursivamente a la función minimax, disminuyendo la profundidad en 1.
-    Se utiliza la poda alfa-beta para eliminar los nodos innecesarios del árbol de búsqueda.
-    Se evalúa el puntaje obtenido de la recursión y se actualiza maxScore o minScore según corresponda.
-    Se actualiza bestMove con la columna que tiene el mejor movimiento.
-
-    Retorno:
-
-    Despues de calcular el mejor movimiento, devolvemos la columna, 
-    que esta es la que se encarga el "selected()" de posicional la fitcha y asignarla al jugador.
-*/
-function minimax(currentPlayer, board, depth, maximizingPlayer, alpha, beta) {
+// Definir la función minimax con poda alfa-beta
+function minimax(board, depth, alpha, beta, maximizingPlayer) {
   // Verificar si hay ganador o ya no hay más movimientos posibles.
-  if (depth === 0 || checkWinner(player1) || checkWinner(player2)) {
-    return -1; // Devolver -1 para indicar que no se encontró ningún movimiento válido.
+  if (depth === 0) {
+    return evaluateBoard(board); // Devolver el valor del tablero.
   }
 
-  let bestMove = -1; // Inicializar el mejor movimiento como -1, para empezar e inicializar.
-
-  if (maximizingPlayer === currentPlayer) {
-    let maxScore = -Infinity;
-    for (const position of board) {
-      if (position.fitcha === null) {
-        position.fitcha = currentPlayer;
-        const score = minimax(currentPlayer === player1 ? player2 : player1, [...board], depth - 1, false, alpha, beta);
-        position.fitcha = null; // Deshacer el movimiento simulado para probar más movimientos.
-        if (score > maxScore) {
-          maxScore = score;
-          bestMove = position.col;
-        }
+  if (maximizingPlayer) {
+    let bestScore = -Infinity;
+    for (let col = 0; col < 7; col++) {
+      let row = findEmptyRow(board, col);
+      if (row !== -1) {
+        board[col][row] = player2.idJugador;
+        let score = minimax(board, depth - 1, alpha, beta, false);
+        board[col][row] = null;
+        bestScore = Math.max(score, bestScore);
         alpha = Math.max(alpha, score);
         if (beta <= alpha) {
           break;
         }
       }
     }
-    return maximizingPlayer === currentPlayer ? maxScore : bestMove;
+    return bestScore;
   } else {
-    let minScore = Infinity;
-    for (const position of board) {
-      if (position.fitcha === null) {
-        position.fitcha = currentPlayer;
-        const score = minimax(currentPlayer === player1 ? player2 : player1, [...board], depth - 1, true, alpha, beta);
-        position.fitcha = null; // Deshacer el movimiento simulado para probar más movimientos.
-        if (score < minScore) {
-          minScore = score;
-          bestMove = position.col;
-        }
+    let bestScore = Infinity;
+    for (let col = 0; col < 7; col++) {
+      let row = findEmptyRow(board, col);
+      if (row !== -1) {
+        board[col][row] = player1.idJugador;
+        let score = minimax(board, depth - 1, alpha, beta, true);
+        board[col][row] = null;
+        bestScore = Math.min(score, bestScore);
         beta = Math.min(beta, score);
         if (beta <= alpha) {
           break;
         }
       }
     }
-    return bestMove; // Retornamos la columna del mejor movimiento.
+    return bestScore;
   }
 }
+
+function evaluateBoard(board) {
+  let score = 0;
+
+  // Comprobar las líneas horizontales
+  for (let row = 0; row < 6; row++) {
+    for (let col = 0; col < 4; col++) {
+      let line = [board[col][row], board[col + 1][row], board[col + 2][row], board[col + 3][row]];
+      score += evaluateLine(line);
+    }
+  }
+
+  // Comprobar las líneas verticales
+  for (let col = 0; col < 7; col++) {
+    for (let row = 0; row < 3; row++) {
+      let line = [board[col][row], board[col][row + 1], board[col][row + 2], board[col][row + 3]];
+      score += evaluateLine(line);
+    }
+  }
+
+  // Comprobar las diagonales de izquierda a derecha
+  for (let col = 0; col < 4; col++) {
+    for (let row = 0; row < 3; row++) {
+      let line = [board[col][row], board[col + 1][row + 1], board[col + 2][row + 2], board[col + 3][row + 3]];
+      score += evaluateLine(line);
+    }
+  }
+
+  // Comprobar las diagonales de derecha a izquierda
+  for (let col = 0; col < 4; col++) {
+    for (let row = 3; row < 6; row++) {
+      let line = [board[col][row], board[col + 1][row - 1], board[col + 2][row - 2], board[col + 3][row - 3]];
+      score += evaluateLine(line);
+    }
+  }
+
+  // Comprobar las líneas de 3 con espacios abiertos alrededor
+  for (let col = 1; col < 4; col++) { // Cambiar 5 a 4
+    for (let row = 0; row < 6; row++) { // Cambiar 1 a 0 y 5 a 6
+      let line = [board[col - 1][row], board[col][row], board[col + 1][row], board[col + 2][row]];
+      if (line.filter(val => val === null).length === 2) {
+        score += evaluateLine(line);
+      }
+    }
+  }
+  return score;
+}
+
+
+// Crear la tabla de transposición
+let transpositionTable = {};
+
+// Definir la función minimax con poda alfa-beta
+function minimax(board, depth, alpha, beta, maximizingPlayer) {
+  // Convertir el tablero a una cadena para usarlo como clave en la tabla de transposición
+  let boardKey = JSON.stringify(board);
+
+  // Si el valor del tablero ya está en la tabla de transposición, usar ese valor
+  if (transpositionTable[boardKey] !== undefined && depth === transpositionTable[boardKey].depth) {
+    return transpositionTable[boardKey].value;
+  }
+
+  // Verificar si hay ganador o ya no hay más movimientos posibles.
+  if (depth === 0) {
+    let value = evaluateBoard(board);
+    // Almacenar el valor del tablero en la tabla de transposición
+    transpositionTable[boardKey] = { value, depth };
+    return value;
+  }
+
+  if (maximizingPlayer) {
+    let bestScore = -Infinity;
+    for (let col = 0; col < 7; col++) {
+      let row = findEmptyRow(board, col);
+      if (row !== -1) {
+        board[col][row] = player2.idJugador; // La máquina es el jugador 2
+        let score = minimax(board, depth - 1, alpha, beta, false);
+        board[col][row] = null;
+        bestScore = Math.max(score, bestScore);
+        alpha = Math.max(alpha, score);
+        if (beta <= alpha) {
+          break;
+        }
+      }
+    }
+    return bestScore;
+  } else {
+    let bestScore = Infinity;
+    for (let col = 0; col < 7; col++) {
+      let row = findEmptyRow(board, col);
+      if (row !== -1) {
+        board[col][row] = player1.idJugador; // El jugador humano es ahora el jugador 1
+        let score = minimax(board, depth - 1, alpha, beta, true);
+        board[col][row] = null;
+        bestScore = Math.min(score, bestScore);
+        beta = Math.min(beta, score);
+        if (beta <= alpha) {
+          break;
+        }
+      }
+    }
+    return bestScore;
+  }
+}
+
+
+function evaluateBoard(board) {
+  let score = 0;
+
+  // Comprobar las líneas horizontales
+  for (let row = 0; row < 6; row++) {
+    for (let col = 0; col < 4; col++) {
+      let line = [board[col][row], board[col + 1][row], board[col + 2][row], board[col + 3][row]];
+      score += evaluateLine(line);
+    }
+  }
+
+  // Comprobar las líneas verticales
+  for (let col = 0; col < 7; col++) {
+    for (let row = 0; row < 3; row++) {
+      let line = [board[col][row], board[col][row + 1], board[col][row + 2], board[col][row + 3]];
+      score += evaluateLine(line);
+    }
+  }
+
+  // Comprobar las diagonales de izquierda a derecha
+  for (let col = 0; col < 4; col++) {
+    for (let row = 0; row < 3; row++) {
+      let line = [board[col][row], board[col + 1][row + 1], board[col + 2][row + 2], board[col + 3][row + 3]];
+      score += evaluateLine(line);
+    }
+  }
+
+  // Comprobar las diagonales de derecha a izquierda
+  for (let col = 0; col < 4; col++) {
+    for (let row = 3; row < 6; row++) {
+      let line = [board[col][row], board[col + 1][row - 1], board[col + 2][row - 2], board[col + 3][row - 3]];
+      score += evaluateLine(line);
+    }
+  }
+
+  // Comprobar las líneas de 3 con espacios abiertos alrededor
+  for (let col = 1; col < 5; col++) { // Cambiar 6 a 5
+    for (let row = 0; row < 6; row++) { // Cambiar 1 a 0 y 5 a 6
+      let line = [board[col - 1][row], board[col][row], board[col + 1][row], board[col + 2][row]];
+      if (line.filter(val => val === null).length === 2) {
+        score += evaluateLine(line);
+      }
+    }
+  }
+
+
+  return score;
+}
+
+function evaluateLine(line) {
+  let score = 0;
+
+  let countPlayer2 = line.filter(val => val === 2).length;
+  let countPlayer1 = line.filter(val => val === 1).length;
+  let countNull = line.filter(val => val === null).length;
+
+  if (countPlayer2 === 4) {
+    score += 10000; // Aumentar la puntuación para una victoria
+  } else if (countPlayer2 === 3 && countNull === 1) {
+    score += 100; // Aumentar la puntuación para una oportunidad de ganar en el siguiente movimiento
+  } else if (countPlayer2 === 2 && countNull === 2) {
+    score += 10;
+  } else if (countPlayer2 === 1 && countNull === 3) {
+    score += 1; // Aumentar la puntuación para una línea de 3 con espacios abiertos alrededor
+  }
+  
+  if (countPlayer1 === 3 && countNull === 1) {
+    score -= 500; // Aumentar la penalización para una amenaza de victoria del oponente
+  } else if (countPlayer1 === 2 && countNull === 2) {
+    score -= 50;
+  } else if (countPlayer1 === 1 && countNull === 3) {
+    score -= 10; // Aumentar la penalización para una línea de 3 con espacios abiertos alrededor del oponente
+  }
+
+  // Comprobar las amenazas de doble victoria
+  if (countPlayer1 === 2 && countNull === 2) {
+    score -= 200; // Aumentar la penalización para una amenaza de doble victoria del oponente
+  }
+
+  return score;
+}
+
+
+
+function bestMove(board) {
+  let bestScore = -Infinity;
+  let bestMove = -1;
+  let alpha = -Infinity;
+  let beta = Infinity;
+
+  // Iterar sobre cada columna del tablero para generar los posibles movimientos
+  for (let col = 0; col < 7; col++) {
+    let row = findEmptyRow(board, col);
+    if (row !== -1) {
+      // Simular el movimiento del jugador 2
+      board[col][row] = 2; // La máquina es el jugador 2
+      // Comprobar si este movimiento resulta en una victoria inmediata
+      if (checkWinner(board, player2.idJugador)) {
+        // Si es así, devolver este movimiento inmediatamente
+        board[col][row] = null;
+        return { col: col, row: row };
+      }
+      // Deshacer el movimiento del jugador 2
+      board[col][row] = null;
+
+      // Simular el movimiento del jugador 1
+      board[col][row] = 1; // El oponente es el jugador 1
+      // Comprobar si este movimiento resulta en una victoria inmediata para el oponente
+      if (checkWinner(board, player1.idJugador)) {
+        // Si es así, devolver este movimiento para bloquear al oponente
+        board[col][row] = null;
+        return { col: col, row: row };
+      }
+      // Deshacer el movimiento del jugador 1
+      board[col][row] = null;
+      board[col][row] = 2;
+
+      // Calcular la puntuación del movimiento utilizando la función minimax
+      let score = minimax(board, 7, alpha, beta, false); // Pasar false para maximizingPlayer
+      board[col][row] = null;
+
+      // Si la puntuación del movimiento actual es mejor que la mejor puntuación hasta ahora, actualizar la mejor puntuación y el mejor movimiento
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = col;
+      }
+
+    }
+  }
+  // Devolver la mejor columna en la que jugar
+  return { col: bestMove, row: findEmptyRow(board, bestMove), score: bestScore };
+}
+
+function findEmptyRow(board, col) {
+  for (let row = 0; row <= 5; row++) {
+    if (board[col][row] === null) {
+      return row;
+    }
+  }
+  return -1; // Columna llena
+}
+
 
 /*  *** reiniciarPartida ***
     Funcion para reiniciar la partida, basicamente refresca la ventana web.
