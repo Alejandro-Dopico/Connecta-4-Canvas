@@ -21,7 +21,7 @@ evaluateBoard(board): Evalúa el estado del tablero y asigna una puntuación bas
 bestMove(board): Determina el mejor movimiento posible para la CPU mediante la aplicación del algoritmo minimax. Retorna la columna donde la CPU debería colocar su ficha para obtener la mejor ventaja.
 Pseudocodigo minimax
 Para ayudarme a comprender como funcionaba el minimax me he mirado varios videos, al final he optado por seguir su pseudocodigo en wikipedia:
-
+```Javascript
 function minimax(node, depth, maximizingPlayer) is
     if depth = 0 or node is a terminal node then
         return the heuristic value of node
@@ -37,13 +37,13 @@ function minimax(node, depth, maximizingPlayer) is
         return value
 (* Initial call *)
 minimax(origin, depth, TRUE)
-
+```
 Estrategia aplicada para verificar el ganador:
 La función checkWinner es crucial para verificar si un jugador ha ganado la partida al lograr una línea de cuatro fichas consecutivas, tanto vertical, horizontal como diagonalmente. Además, esta función se utiliza para determinar si el siguiente movimiento puede llevar a la victoria o si es necesario defenderse de un movimiento ganador del oponente.
 Es decir tiene dos utilidades “checkWinner”:
 Verificar ganador
 Para comprobar si hay un ganador o no, como tenemos una matriz con los valores de las fichas he iterado 4 veces esta matriz mirando hacia todas las direcciónes; horizontal, vertical, diagonal derecha y diagonal izquierda.
-
+```Javascript
   function getAllLines(board) {
     const lines = [];
     // Lineas horizontales.
@@ -72,7 +72,7 @@ Para comprobar si hay un ganador o no, como tenemos una matriz con los valores d
     }
     return lines;
   }
-
+```
 Esto suma al objeto “lines”, todas las 4 posibles rectas donde se establece el ganador, en cada una de las 4 iteraciones, entonces este devolverá el resultado de estas.
 Si encuentra una línea con “1111” o “2222” consecutivos devolverá un true, porque esto significa que en la matriz ha encontrado una línea ganadora que esta acabara la partida.
 
@@ -84,7 +84,7 @@ Eso precisamente es lo que hace el minimax, pero fue de lo primero que implement
 
 
 Código en la parte de la simulación:
-
+```Javascript
 // Simular el movimiento del jugador 2
       board[col][row] = 2; // La máquina es el jugador 2
       // Comprobar si este movimiento resulta en una victoria inmediata, si es asi devuelve ese movimiento-
@@ -109,5 +109,5 @@ Código en la parte de la simulación:
       let score = minimax(board, 6, alpha, beta, false);
       board[col][row] = null;
 
-
+```
 Además que luego minimax, dependiendo del puntaje hará una estrategia a otra, estas dos utilidades son independientes del minimax, pero predomina la decisión de defender y ganar, ya que no hará el minimax en esos casos, ya que hay un return.
