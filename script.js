@@ -78,7 +78,7 @@ var ballPlayer1 = {
   x: optionX,
   y: optionY,
   radius: 33,
-  color: "blue"
+  color: "yellow"
 };
 
 var ballPlayer2 = {
