@@ -72,6 +72,12 @@ body {
 
 }
 
+#ganador {
+    color: green; 
+    font-weight: bold; 
+    font-size: 20px
+}
+
 .interaccion {
     margin-top: 25px;
     display: flex;
@@ -113,11 +119,6 @@ body {
     display: none;
 }
 
-.colVertical1:hover {
-    font-size: 35px;
-    color: rgb(0, 7, 112); 
-}
-
 .colVertical2 {
     position: absolute;
     margin-top: -10px;
@@ -134,11 +135,6 @@ body {
     display: flex;
     justify-content: center; 
     display: none;
-}
-
-.colVertical2:hover {
-    font-size: 35px;
-    color: rgb(0, 7, 112); 
 }
 
 .colVertical3 {
@@ -159,11 +155,6 @@ body {
     display: none;
 }
 
-.colVertical3:hover {
-    font-size: 35px;
-    color: rgb(0, 7, 112); 
-}
-
 .colVertical4 {
     position: absolute;
     margin-top: -10px;
@@ -180,11 +171,6 @@ body {
     display: flex;
     justify-content: center; 
     display: none;
-}
-
-.colVertical4:hover {
-    font-size: 35px;
-    color: rgb(0, 7, 112); 
 }
 
 .colVertical5 {
@@ -205,11 +191,6 @@ body {
     display: none;
 }
 
-.colVertical5:hover {
-    font-size: 35px;
-    color: rgb(0, 7, 112); 
-}
-
 .colVertical6 {
     position: absolute;
     margin-top: -10px;
@@ -226,11 +207,6 @@ body {
     display: flex;
     justify-content: center; 
     display: none;
-}
-
-.colVertical6:hover {
-    font-size: 35px;
-    color: rgb(0, 7, 112); 
 }
 
 .colVertical7 {
@@ -251,9 +227,71 @@ body {
     display: none;
 }
 
+.colVertical1:hover,
+.colVertical2:hover,
+.colVertical3:hover,
+.colVertical4:hover,
+.colVertical5:hover,
+.colVertical6:hover,
 .colVertical7:hover {
     font-size: 35px;
-    color: rgb(0, 7, 112); 
+    color: rgb(0, 7, 112);
 }
 
+/* *** Parte responsive para telefonos *** */
 
+/* Parte responsive para dispositivos móviles, pero el tablero no he podido ajustarlo bien. */
+
+@media only screen and (max-width: 768px) {
+
+    .titulo {
+        margin-top: 10px; /* Reducido el margen superior */
+    }
+
+    .textoElegir,
+    .textoJuego,
+    .textoInicio {
+        font-size: 18px;
+        margin: 5px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    #ficha {
+        width: 350;
+        height: 350;
+        margin-top: 20px; /* Reducido el margen superior */
+        border-radius: 8px; /* Reducido el radio de borde */
+    }
+
+    #tablero {
+        width: 350;
+        height: 350;
+        margin-top: 20px; /* Reducido el margen superior */
+        border-radius: 8px; /* Reducido el radio de borde */
+        border-width: 1px; /* Reducido el grosor del borde */
+    }
+
+    .colVertical1,
+    .colVertical2,
+    .colVertical3,
+    .colVertical4,
+    .colVertical5,
+    .colVertical6,
+    .colVertical7 {
+        margin-top: -5px; /* Reducido el margen superior */
+        width: 50px; /* Reducido el ancho */
+        height: 80%; /* Reducido la altura */
+        font-size: 20px; /* Reducido el tamaño de la fuente */
+    }
+
+    .colVertical1:hover,
+    .colVertical2:hover,
+    .colVertical3:hover,
+    .colVertical4:hover,
+    .colVertical5:hover,
+    .colVertical6:hover,
+    .colVertical7:hover {
+        font-size: 25px; /* Aumentado el tamaño de la fuente al pasar el cursor */
+    }
+}
