@@ -1,16 +1,4 @@
-/*** RESUMEN ***  !!!La explicación de las funciones estan al principio de ellas metodos y todo!!!!
-
-    Conecta 4, en primer lugar he querido hacerlo con objetos
-    esto se debe a que creo que seria más escalable a futuro.
-    En este proyecto genero todas las posiciones y a cada posicion
-    se le puede asignar una fitcha que posteriormente esta fitcha se puede
-    assignar a un jugador.La idea de generar todas las posiciones es
-    poder guardar estas en una matriz con columnas y filas para iterar con ellas.
-    En estas posiciones guardamos sus valores de X y Y, para luego representar sus posiciones
-    en el tablero y poder crear animaciones.Lo malo es que las posiciones son estaticas, es decir,
-    si moviese el tablero hacia la derecha las cordenadas de las fichas siempre son las mismas,
-    quedarian desplazadas en el tablero.
-*/
+/* *** DOCUMENTACIÓN ADJUNTA *** */
 
 /* Las clases Ficha, Posicion y Jugador. */
 class Ficha {
@@ -178,7 +166,6 @@ let contextTablero = tablero.getContext("2d");
 var optionX = null;
 var optionY = null;
 
-
 // Inicializo a el jugador dos para que en la funcion alternatePlayer() empieze el "Jugador 1".
 let currentPlayer = player2;
 
@@ -226,7 +213,6 @@ function alternatePlayer(colSelectedButton) {
   selected(currentPlayer, columnSelected);
 }
 
-
 /*  *** updateBoard() ***
     Hacemos que las posiciones sean una matriz 7x6 para que se adapte al tablero
     del conecta4 asi podremos iterarlo mejor mas adelante. ademas de actualizar las posiciones
@@ -261,7 +247,6 @@ function CpuMove() {
   // Sumar 1 para ajustar la columna al rango 1-7, ay que para la matriz la columna 1 es 0 (por ejemplo).
   selected(currentPlayer, bestMovePosition.col + 1); 
 }
-
 
 /*  *** selected ***
     Esta función se ocupa de buscar la fila disponible correspondiente a la columna y esta asignarla
@@ -471,8 +456,6 @@ function checkWinner(board, player) {
 
   return false;
 }
-
-// Crear la tabla de transposición
 
 
 /*  *** algoritmo minimax ***
